@@ -63,12 +63,12 @@ class Synth {
 }
 
 class LookupTableSynth extends Synth {
-  constructor(processorName, processorFile, lookupTableFile) {
+  constructor(processorName, processorFile, lookupTable) {
     super(processorName, processorFile, {});
-    this.lookupTableFile = lookupTableFile;
+    this.npyArray = lookupTable;
   }
 
-  async _blockingLoadNpy(filename) {
+  static async _blockingLoadNpy(filename) {
     let loaded = false;
     let output = undefined;
     const n = new npyjs();
@@ -84,26 +84,30 @@ class LookupTableSynth extends Synth {
     while (!loaded) {
       await sleep(100);
     }
-    return output;
+    return ndarray(output.data, output.shape);
   }
 
   async initialiseSynth() {
-    const npyData = await this._blockingLoadNpy(this.lookupTableFile);
-    const npyArray = ndarray(npyData.data, npyData.shape);
     this.processorOptions = {
-      npyArray,
+      npyArray: this.npyArray,
     };
     await super.initialiseSynth();
   }
 }
 
 class ExperimentSynth extends LookupTableSynth {
-  constructor() {
-    super(
-      "wavetable_processor",
-      "wavetable_processor.js",
-      "waveshaper_grid.npy"
+  constructor(lookupTable, impulseResponse) {
+    super("wavetable_processor", "wavetable_processor.js", lookupTable);
+    this.impulseResponse = impulseResponse;
+  }
+
+  static async loadResources(lookupTableFile, irFile) {
+    const lookupTable = await LookupTableSynth._blockingLoadNpy(
+      lookupTableFile
     );
+    const impulseResponseStream = await fetch(irFile);
+    const impulseResponse = await impulseResponseStream.arrayBuffer();
+    return { lookupTable, impulseResponse };
   }
 
   static getParams(x, y) {
@@ -144,9 +148,9 @@ class ExperimentSynth extends LookupTableSynth {
     this.audioStarted = false;
     this.synth.disconnect(this.context.destination);
 
-    const irResponse = await fetch("audio/ir.wav");
-    const irBuffer = await irResponse.arrayBuffer();
-    const irAudioBuffer = await this.context.decodeAudioData(irBuffer);
+    const irAudioBuffer = await this.context.decodeAudioData(
+      this.impulseResponse.slice(0)
+    );
     this.convolution = this.context.createConvolver();
     this.convolution.buffer = irAudioBuffer;
 

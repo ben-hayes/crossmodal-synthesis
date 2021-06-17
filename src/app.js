@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import XyController from "./xy_controller";
-import { ExperimentSynth } from "./synth";
+import { ExperimentSynth, LookupTableSynth } from "./synth";
 import { randomSubset, sleep } from "./utils";
 import { KnnClassifier, NeuralNetworkClassifier } from "./classifier";
 
@@ -18,7 +18,8 @@ class SynthesiserPad extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.synth = new ExperimentSynth();
+    const { lookupTable, impulseResponse } = this.props.synthResources;
+    this.synth = new ExperimentSynth(lookupTable, impulseResponse);
   }
 
   componentWillUnmount() {
@@ -91,6 +92,7 @@ class Trial extends React.Component {
         </h2>
         <SynthesiserPad
           posChangeCallback={(coords) => this.setState({ coords })}
+          synthResources={this.props.synthResources}
         />
         <div className="controls">
           <button
@@ -164,6 +166,7 @@ class HeatmapViewer extends React.Component {
         <SynthesiserPad
           posChangeCallback={(coords) => this.setState({ coords })}
           heatmapData={this.heatmapData}
+          synthResources={this.props.synthResources}
         />
         <div className="viewerExplanation">
           <h3>
@@ -374,6 +377,7 @@ class ClassifierPage extends React.Component {
             </div>
             <SynthesiserPad
               posChangeCallback={(coords) => this._doInference(coords)}
+              synthResources={this.props.synthResources}
             />
             <div className="viewerExplanation">
               <h3>
@@ -437,6 +441,7 @@ class Experiment extends React.Component {
       <Trial
         prompt={this.props.prompts[this.state.currentPromptIndex]}
         onComplete={(coords) => this.trialComplete(coords)}
+        synthResources={this.props.synthResources}
       />
     );
   }
@@ -557,10 +562,16 @@ class App extends React.Component {
       fakeResponses[prompt] = dummyData;
     }
 
+    const synthResources = await ExperimentSynth.loadResources(
+      "waveshaper_grid.npy",
+      "audio/ir.wav"
+    );
+
     this.setState({
       appState: AppState.EXPERIMENT,
       prompts: fakePrompts,
       previousResponses: fakeResponses,
+      synthResources,
     });
   }
 
@@ -596,6 +607,7 @@ class App extends React.Component {
                 completedTrialCoords: data,
               });
             }}
+            synthResources={this.state.synthResources}
           />
         );
         break;
@@ -622,6 +634,7 @@ class App extends React.Component {
             heatmapData={this.combinedData}
             prompts={this.state.prompts}
             onBackClick={() => this.setState({ appState: AppState.DONE })}
+            synthResources={this.state.synthResources}
           />
         );
         break;
@@ -632,6 +645,7 @@ class App extends React.Component {
             heatmapData={this.combinedData}
             prompts={this.state.prompts}
             onBackClick={() => this.setState({ appState: AppState.DONE })}
+            synthResources={this.state.synthResources}
           />
         );
         break;
