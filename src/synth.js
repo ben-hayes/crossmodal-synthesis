@@ -114,13 +114,22 @@ class ExperimentSynth extends LookupTableSynth {
     return {
       x,
       y,
-      modGain:
-        0.5 *
-        (repeatingRbf(x + 0.25, 16, 0.4) + repeatingRbf(y + 0.53, 16, 0.3)),
-      modFreq:
-        0.5 * (repeatingRbf(x + 0.3, 14, 0.3) + repeatingRbf(y, 17, 0.4)),
-      filterCutoff:
+      // modGain:
+      //   0.5 * (repeatingRbf(x + 0, 18, 0.6) + repeatingRbf(y + 0, 17, 0.5)),
+      // modFreq:
+      //   0.5 * (repeatingRbf(x + 0, 17.5, 0.7) + repeatingRbf(y, 18.5, 0.5)),
+      modGain: Math.pow(
+        Math.cos(2.9 * Math.PI * (1.4 * x + 0.6 * y + 0.1 * x * y)) * 0.5 + 0.5,
+        2
+      ),
+      modFreq: Math.pow(
+        Math.cos(4.2 * Math.PI * (0.6 * x + 1.3 * y + 0.2 * x * y)) * 0.5 + 0.5,
+        2
+      ),
+      filterCutoff: Math.pow(
         Math.cos(3.8 * Math.PI * (1.2 * x + 0.9 * y + 0.3 * x * y)) * 0.5 + 0.5,
+        2
+      ),
     };
   }
 
@@ -137,6 +146,7 @@ class ExperimentSynth extends LookupTableSynth {
       modFreq * 500.0,
       this.context.currentTime + 0.1
     );
+    console.log(filterCutoff);
     this.filterA.frequency.linearRampToValueAtTime(
       Math.pow(filterCutoff, 1.5) * 8000 + 100,
       this.context.currentTime + 0.1
