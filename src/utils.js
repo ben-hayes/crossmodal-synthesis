@@ -24,21 +24,8 @@ function noteToFreq(note) {
   return 2 ** ((note - 69) / 12) * 440.0;
 }
 
-function getCssVariable(ruleName, varName) {
-  const stylesheet = document.styleSheets[1];
-  const rule = Array.from(stylesheet.cssRules).filter(
-    (x) => x.selectorText === ruleName
-  )[0];
-  const ruleContents = rule.cssText.split("{")[1].split(";");
-  const variable = ruleContents.filter((x) =>
-    x.replace(" ", "").startsWith("--" + varName)
-  )[0];
-  const output = variable.split(":")[1].replace(" ", "");
-  return output;
-}
-
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export { getCssVariable, noteToFreq, randomSubset, rbf, repeatingRbf, sleep };
+export { noteToFreq, randomSubset, rbf, repeatingRbf, sleep };

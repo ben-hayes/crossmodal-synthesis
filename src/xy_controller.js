@@ -2,8 +2,6 @@ import React, { useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import h337 from "heatmap.js";
 
-import { getCssVariable } from "./utils";
-
 function XyCanvas(props) {
   const canvasRef = useRef(null);
   const { draw, ...canvasProps } = props;
@@ -33,10 +31,10 @@ class XyController extends React.Component {
   drawController(context, isHeatmap, xPos, yPos) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     if (!isHeatmap) {
-      context.fillStyle = getCssVariable("html", "pad-bg");
+      context.fillStyle = "#fffcf2";
       context.fillRect(0, 0, context.canvas.width, context.canvas.height);
     }
-    context.fillStyle = getCssVariable("html", "border");
+    context.fillStyle = "#252422";
     context.fillRect(xPos - 10, yPos - 10, 20, 20);
   }
 
@@ -81,7 +79,7 @@ class XyController extends React.Component {
   createHeatMap() {
     if (!this.heatmap) {
       this.heatmap = h337.create({
-        backgroundColor: getCssVariable("html", "pad-bg"),
+        backgroundColor: "#fffcf2",
         container: this.heatmapRef.current,
       });
     }
