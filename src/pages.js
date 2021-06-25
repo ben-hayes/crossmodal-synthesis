@@ -488,10 +488,10 @@ function DonePage(props) {
   const warning = props.tooFewSounds ? (
     <div>
       <h3>Until more sounds are created, the next option is disabled.</h3>
-      <h4>
-        Come back soon to try it out! Why not contribute more sounds to help
-        unlock it sooner?
-      </h4>
+      <h5>
+        Come back soon to try it out! In the meantime, why not make more sounds
+        to help unlock it sooner?
+      </h5>
     </div>
   ) : null;
   return (

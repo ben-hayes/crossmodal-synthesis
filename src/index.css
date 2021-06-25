@@ -48,8 +48,13 @@ body {
 
 .content h2,
 h3,
-h4 {
+h4,
+h5 {
   text-align: center;
+}
+
+h5 {
+  font-size: 11pt;
 }
 
 .prompt {
