@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import ReactDOM from "react-dom";
+// import ReactDOM from "react-dom";
 import h337 from "heatmap.js";
 
 function XyCanvas(props) {
@@ -25,7 +25,6 @@ class XyController extends React.Component {
     };
 
     this.heatmapRef = React.createRef();
-    this.props.posChangeCallback(0, 0);
   }
 
   drawController(context, isHeatmap, xPos, yPos) {
@@ -52,7 +51,6 @@ class XyController extends React.Component {
   }
 
   handleMouseDown(e) {
-    const rect = e.currentTarget.getBoundingClientRect();
     const { x, y } = this._getMouseCoords(e);
     this.props.posChangeCallback(x, y);
     this.setState({
@@ -84,7 +82,7 @@ class XyController extends React.Component {
       });
     }
     this.heatmap.setData({
-      max: 5,
+      max: 3,
       data: this.props.heatmapData,
     });
   }

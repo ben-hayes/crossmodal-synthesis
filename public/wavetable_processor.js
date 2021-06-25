@@ -3,7 +3,6 @@ class WavetableProcessor extends AudioWorkletProcessor {
     super();
 
     this.wavetable = options.processorOptions.npyArray;
-    console.log(this.wavetable);
 
     this.phase = 0;
   }
@@ -71,8 +70,8 @@ class WavetableProcessor extends AudioWorkletProcessor {
 
   static get parameterDescriptors() {
     return [
-      { name: "x", defaultValue: 0.5 },
-      { name: "y", defaultValue: 0.5 },
+      { name: "x", defaultValue: 0.0 },
+      { name: "y", defaultValue: 0.0 },
       { name: "gain", defaultValue: 0.0 },
       { name: "frequency", defaultValue: 174.614 },
     ];
@@ -92,11 +91,13 @@ class WavetableProcessor extends AudioWorkletProcessor {
       const x = params.x.length === blockSize ? params.x[n] : params.x[0];
       const y = params.y.length === blockSize ? params.y[n] : params.y[0];
 
-      this.lastPhase = this.phase;
       this.phase += (2 * Math.PI * freq) / sampleRate;
       while (this.phase > 2 * Math.PI) this.phase -= 2 * Math.PI;
 
-      const output = gain * this._sampleWavetable(this.phase, x, y);
+      let output = gain * this._sampleWavetable(this.phase, x, y);
+      if (isNaN(output)) {
+        output = 0;
+      }
 
       outputSignal.push(output);
     }

@@ -2,7 +2,7 @@ import ndarray from "ndarray";
 import npyjs from "npyjs";
 import React from "react";
 
-import { repeatingRbf, noteToFreq } from "./utils";
+import { noteToFreq } from "./utils";
 
 class Synth {
   constructor(processorName, processorFile, processorOptions) {
@@ -59,6 +59,10 @@ class Synth {
     this.synth.parameters
       .get("gain")
       .linearRampToValueAtTime(0.0, this.context.currentTime + 0.1);
+  }
+
+  closeContext() {
+    this.context.close();
   }
 }
 
@@ -143,10 +147,9 @@ class ExperimentSynth extends LookupTableSynth {
       this.context.currentTime + 0.1
     );
     this.modulator.frequency.linearRampToValueAtTime(
-      modFreq * 500.0,
+      150 + modFreq * 450.0,
       this.context.currentTime + 0.1
     );
-    console.log(filterCutoff);
     this.filterA.frequency.linearRampToValueAtTime(
       Math.pow(filterCutoff, 1.5) * 8000 + 100,
       this.context.currentTime + 0.1
@@ -177,6 +180,7 @@ class ExperimentSynth extends LookupTableSynth {
     this.filterA = new BiquadFilterNode(this.context);
     this.filterA.type = "bandpass";
     this.filterA.Q.value = 1 / 2;
+    this.filterA.frequency.value = 1000.0;
     this.amSynth.connect(this.filterA);
     this.filterOut = new GainNode(this.context);
     this.filterA.connect(this.filterOut);

@@ -1,3 +1,5 @@
+import * as md5 from "md5";
+
 function rbf(x, eps) {
   return Math.exp(-((eps * x) ** 2));
 }
@@ -28,4 +30,12 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export { noteToFreq, randomSubset, rbf, repeatingRbf, sleep };
+function makeUserId() {
+  const d = new Date();
+  const time = d.getTime();
+  const message = time + Math.random() * time;
+  const userId = md5(message.toString());
+  return userId;
+}
+
+export { makeUserId, noteToFreq, randomSubset, rbf, repeatingRbf, sleep };

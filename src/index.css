@@ -94,6 +94,7 @@ h4 {
 }
 
 .nextButton {
+  color: var(--pad-bg);
   display: block;
   padding: 10px;
   margin: auto;

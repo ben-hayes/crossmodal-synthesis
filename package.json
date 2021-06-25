@@ -5,6 +5,7 @@
     "node": "16.x",
     "yarn": "1.22.x"
   },
+  "proxy": "http://localhost:8080",
   "private": true,
   "dependencies": {
     "@tensorflow-models/knn-classifier": "^1.2.2",
@@ -12,18 +13,25 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
     "heatmap.js": "^2.0.5",
     "jpickle": "^0.4.1",
+    "md5": "^2.3.0",
+    "mongodb": "^3.6.9",
     "ndarray": "^1.0.19",
     "npyjs": "^0.2.0",
     "onnxjs": "^0.1.8",
     "react": "^17.0.2",
+    "react-cookie": "^4.0.3",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node server.js",
+    "start-dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
