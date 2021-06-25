@@ -50,7 +50,7 @@ class App extends React.Component {
       dataAgreed,
       appState: App.State.LOADING,
       showingExplanation: false,
-      completedTrialCoords: null,
+      completedTrialCoords: [],
     };
   }
 
@@ -59,6 +59,10 @@ class App extends React.Component {
   }
 
   async storeResponse(response) {
+    this.setState({
+      completedTrialCoords: this.state.completedTrialCoords.concat([response]),
+    });
+
     if (this.state.dataAgreed) {
       response.userId = this.state.userId;
       const requestOptions = {
@@ -71,7 +75,7 @@ class App extends React.Component {
     }
   }
 
-  async fetchResources() {
+  async _fetchPreviousResponses() {
     const rawData = await fetch("/api/experiment-data");
     const { prompts, responses } = await rawData.json();
     const previousResponses = {};
@@ -81,6 +85,11 @@ class App extends React.Component {
       }
       previousResponses[response.prompt].push({ x: response.x, y: response.y });
     }
+    return { prompts, previousResponses };
+  }
+
+  async fetchResources() {
+    const { prompts, previousResponses } = await this._fetchPreviousResponses();
 
     const synthResources = await ExperimentSynth.loadResources(
       "waveshaper_grid.npy",
@@ -105,13 +114,12 @@ class App extends React.Component {
       return this.state.previousResponses;
     } else {
       const combinedData = { ...this.state.previousResponses };
-      for (let prompt in this.state.completedTrialCoords) {
-        if (!(prompt in combinedData)) {
-          combinedData[prompt] = [];
+      for (let response of this.state.completedTrialCoords) {
+        if (!(response.prompt in combinedData)) {
+          combinedData[response.prompt] = [];
         }
-        combinedData[prompt] = combinedData[prompt].concat(
-          this.state.completedTrialCoords[prompt]
-        );
+        combinedData[response.prompt] =
+          combinedData[response.prompt].concat(response);
       }
       return combinedData;
     }
@@ -318,7 +326,7 @@ class App extends React.Component {
             onDone={(data) => {
               this.setState({
                 appState: App.State.DONE,
-                completedTrialCoords: data,
+                // completedTrialCoords: data,
               });
             }}
             synth={this.state.synth}

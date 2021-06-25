@@ -16,7 +16,7 @@ function Welcome(props) {
 
   const pages = [
     <div>
-      <h2>{welcomeText}</h2>
+      <h2>{welcomeText} 🧪👂🎹</h2>
       <p>
         On the following screens you'll be invited to create sounds in response
         to descriptive prompts. Sound complicated? Don't worry! We've made it
@@ -24,7 +24,7 @@ function Welcome(props) {
       </p>
     </div>,
     <div>
-      <h2>How does it work?</h2>
+      <h2>How does it work? 🤔</h2>
       <p>
         On each screen, you'll be presented with a rectangular control space
         containing a black square. All you need to do is click and drag the
@@ -35,7 +35,7 @@ function Welcome(props) {
       </p>
     </div>,
     <div>
-      <h2>A couple of tips...</h2>
+      <h2>A couple of tips... ☝🧑‍🏫️</h2>
       <p>
         There are a lot of different sounds hidden in the space, so we suggest
         moving the square slowly over small distances to hear all the
@@ -46,11 +46,11 @@ function Welcome(props) {
       </p>
     </div>,
     <div>
-      <h2>One last thing...</h2>
+      <h2>One last thing... ✔️</h2>
       <p>
         {dataText} Once you're done, you can explore the sounds others created
         in response to the prompts, and even use machine learning to see how the
-        compute interprets sounds in the space. Ready to go?
+        computer interprets sounds in the space. Ready to go?
       </p>
     </div>,
   ];
@@ -80,7 +80,7 @@ class Trial extends React.Component {
     this.startTime = new Date().getTime();
 
     this.state = {
-      coords: {},
+      coords: { x: 0, y: 0 },
       coordHistory: [],
     };
   }
@@ -487,12 +487,10 @@ class Experiment extends React.Component {
 function DonePage(props) {
   const warning = props.tooFewSounds ? (
     <div>
-      <h3>
-        Until more people take part, the next two options will not work so well.
-      </h3>
+      <h3>Until more sounds are created, the next option is disabled.</h3>
       <h4>
-        You can still try them out. Or, why not contribute more sounds to help
-        them function better?
+        Come back soon to try it out! Why not contribute more sounds to help
+        unlock it sooner?
       </h4>
     </div>
   ) : null;
@@ -504,13 +502,13 @@ function DonePage(props) {
         <a href="/#" onClick={props.makeMoreSounds}>
           <div className="option">Make more sounds.</div>
         </a>
-        {warning}
         <a href="/#" onClick={props.exploreResponses}>
           <div className="option">Explore other people's responses.</div>
         </a>
-        <a href="/#" onClick={props.useClassifier}>
-          <div className="option">
-            Use machine learning to describe sounds.{" "}
+        {warning}
+        <a href="/#" onClick={props.tooFewSounds ? null : props.useClassifier}>
+          <div className={props.tooFewSounds ? "option disabled" : "option"}>
+            Describe sounds with machine learning.{" "}
           </div>
         </a>
       </div>

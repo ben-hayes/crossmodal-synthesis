@@ -266,6 +266,10 @@ a {
   background-color: var(--page-background);
 }
 
+.disabled {
+  background-color: var(--main-panel-background) !important;
+}
+
 .back-button {
   text-align: center;
   width: 80px;
