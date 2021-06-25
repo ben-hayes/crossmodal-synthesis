@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { KnnClassifier } from "./classifier";
 import { ExperimentSynth } from "./synth";
@@ -6,45 +6,69 @@ import { BackButton, SynthesiserPad, Modal } from "./ui";
 import { sleep } from "./utils";
 
 function Welcome(props) {
+  const [page, setPage] = useState(0);
   const welcomeText = props.cookieExistedOnPageLoad
     ? "Welcome back!"
     : "Welcome!";
   const dataText = props.dataAgreed
     ? "You said you're willing for us to use your responses in our research, so thank you! The sounds you create will help us to learn more about how we perceive sound, and the relationships between sound and language."
     : "You said you'd prefer us not to use your responses in our research. That's absolutely fine and you're still perfectly welcome to use this page — we simply won't record your responses.";
+
+  const pages = [
+    <div>
+      <h2>{welcomeText}</h2>
+      <p>
+        On the following screens you'll be invited to create sounds in response
+        to descriptive prompts. Sound complicated? Don't worry! We've made it
+        super easy for you.
+      </p>
+    </div>,
+    <div>
+      <h2>How does it work?</h2>
+      <p>
+        On each screen, you'll be presented with a rectangular control space
+        containing a black square. All you need to do is click and drag the
+        black square around the space. When your mouse is held down the sound
+        will play, and as you move the square the sound will change. It's as
+        simple as that! Once you've found a sound you think matches the prompt,
+        simply click the button below the control to move on.
+      </p>
+    </div>,
+    <div>
+      <h2>A couple of tips...</h2>
+      <p>
+        There are a lot of different sounds hidden in the space, so we suggest
+        moving the square slowly over small distances to hear all the
+        variations. If a particular region of the space doesn't seem to be
+        working out, just click somewhere else and start exploring there
+        instead. The differences between sounds can be quite subtle, so we
+        recommend using headphones for the best experience.
+      </p>
+    </div>,
+    <div>
+      <h2>One last thing...</h2>
+      <p>
+        {dataText} Once you're done, you can explore the sounds others created
+        in response to the prompts, and even use machine learning to see how the
+        compute interprets sounds in the space. Ready to go?
+      </p>
+    </div>,
+  ];
+  const readyButton = (
+    <button onClick={props.readyClicked} className="nextButton">
+      I'm ready!
+    </button>
+  );
+  const nextButton = (
+    <button onClick={() => setPage(page + 1)} className="nextButton">
+      Next
+    </button>
+  );
   return (
     <div className="trial">
       <div className="viewerExplanation">
-        <h2>{welcomeText}</h2>
-        <p>
-          On the following screens you'll be invited to create sounds in
-          response to descriptive prompts. Sound complicated? Don't worry! We've
-          made it super easy for you.
-        </p>
-        <p>
-          On each screen, you'll be presented with a rectangular control space
-          containing a black square. All you need to do is click and drag the
-          black square around the space. When your mouse is held down the sound
-          will play, and as you move the square the sound will change. It's as
-          simple as that! Once you've found a sound you think matches the
-          prompt, simply click the button below the control to move on.
-        </p>
-        <p>
-          There are a lot of different sounds hidden in the space, so we suggest
-          moving the square slowly over small distances to hear all the
-          variations. If a particular region of the space doesn't seem to be
-          working out, just click somewhere else and start exploring there
-          instead. The differences between sounds can be quite subtle, so we
-          recommend using headphones for the best experience.
-        </p>
-        <p>
-          {dataText} Once you're done, you can explore the sounds others created
-          in response to the prompts, and even use machine learning to see how
-          the compute interprets sounds in the space. Ready to go?
-        </p>
-        <button onClick={props.readyClicked} className="nextButton">
-          I'm ready!
-        </button>
+        {pages[page]}
+        {page === pages.length - 1 ? readyButton : nextButton}
       </div>
     </div>
   );
