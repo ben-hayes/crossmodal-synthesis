@@ -327,6 +327,12 @@ class App extends React.Component {
         break;
 
       case App.State.DONE:
+        let numSounds = 0;
+        const data = this.combinedData;
+        for (let key in data) {
+          numSounds += data[key].length;
+        }
+
         content = (
           <DonePage
             makeMoreSounds={() =>
@@ -338,6 +344,7 @@ class App extends React.Component {
             useClassifier={() =>
               this.setState({ appState: App.State.CLASSIFIER })
             }
+            tooFewSounds={numSounds < 100}
           />
         );
         break;

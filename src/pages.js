@@ -461,6 +461,17 @@ class Experiment extends React.Component {
 }
 
 function DonePage(props) {
+  const warning = props.tooFewSounds ? (
+    <div>
+      <h3>
+        Until more people take part, the next two options will not work so well.
+      </h3>
+      <h4>
+        You can still try them out. Or, why not contribute more sounds to help
+        them function better?
+      </h4>
+    </div>
+  ) : null;
   return (
     <div className="viewerExplanation">
       <h2>Thank you!</h2>
@@ -469,11 +480,14 @@ function DonePage(props) {
         <a href="/#" onClick={props.makeMoreSounds}>
           <div className="option">Make more sounds.</div>
         </a>
+        {warning}
         <a href="/#" onClick={props.exploreResponses}>
           <div className="option">Explore other people's responses.</div>
         </a>
         <a href="/#" onClick={props.useClassifier}>
-          <div className="option">Use machine learning to describe sounds.</div>
+          <div className="option">
+            Use machine learning to describe sounds.{" "}
+          </div>
         </a>
       </div>
     </div>
