@@ -43,7 +43,7 @@ class Synth {
       .linearRampToValueAtTime(value, this.context.currentTime + 0.1);
   }
 
-  noteOn(note) {
+  _sendNoteOn(note) {
     this.synth.parameters
       .get("gain")
       .linearRampToValueAtTime(1.0, this.context.currentTime + 0.1);
@@ -53,6 +53,13 @@ class Synth {
         noteToFreq(note),
         this.context.currentTime + 0.01
       );
+  }
+  noteOn(note) {
+    if (this.context.state !== "running") {
+      this.context.resume().then(() => this._sendNoteOn(note));
+    } else {
+      this._sendNoteOn(note);
+    }
   }
 
   noteOff() {
